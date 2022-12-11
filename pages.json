@@ -1,0 +1,92 @@
+{
+  "pages": [{
+    "path": "pages/index/index",
+    "style": {
+      "navigationBarTitleText": "uni-app",
+      "app-plus": {
+        "titleNView": {
+          "searchInput": {
+            "align": "center",
+            "backgroundColor": "#F5F4F2",
+            "borderRadius": "4px",
+            "disabled": true,
+            "placeholder": "搜索帖子",
+            "placeholderColor": "#6D6C67"
+          },
+          "buttons": [{
+            "color": "#333333",
+            "colorPressed": "#FD597C",
+            "float": "right",
+            "fontSize": "22px",
+            "fontSrc": "/common/iconfont/iconfont.ttf",
+            // 这里不要填写 class 类型的，要填写 Unicode 类型的字体标。并将前面的 &ex 换成 \u。比如：&#xe640 → \ue640
+            "text": "\ue640"
+          }]
+        }
+      }
+    }
+  }, {
+    "path": "pages/news/news",
+    "style": {
+      "navigationBarTitleText": "",
+      "enablePullDownRefresh": false
+    }
+
+  }, {
+    "path": "pages/msg/msg",
+    "style": {
+      "navigationBarTitleText": "",
+      "enablePullDownRefresh": false
+    }
+
+  }, {
+    "path": "pages/my/my",
+    "style": {
+      "navigationBarTitleText": "",
+      "enablePullDownRefresh": false
+    }
+
+  }],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8",
+    "app-plus": {
+      "background": "#efeff4"
+    }
+  },
+  "tabBar": { // 配置项指定 tab 栏的表现，以及 tab 切换时显示的对应页面
+    "list": [ // tab 栏页面
+      {
+        "pagePath": "pages/index/index", // 点击 tabBar 栏跳转的页面路径
+        "text": "首页", // tab 栏标题
+        "iconPath": "static/tabBar/index-off.png", // 未选中状态 的图标路径
+        "selectedIconPath": "static/tabBar/index-on.png" // 已选中状态 的图标路径
+      },
+      {
+        "pagePath": "pages/news/news",
+        "text": "动态",
+        "iconPath": "static/tabBar/news-off.png",
+        "selectedIconPath": "static/tabBar/news-on.png"
+      },
+      {
+        "pagePath": "pages/msg/msg",
+        "text": "消息",
+        "iconPath": "static/tabBar/msg-off.png",
+        "selectedIconPath": "static/tabBar/msg-on.png"
+      },
+      {
+        "pagePath": "pages/my/my",
+        "text": "我的",
+        "iconPath": "static/tabBar/my-off.png",
+        "selectedIconPath": "static/tabBar/my-on.png"
+      }
+    ],
+    "color": "#0094ff", // 未选中状态 的字体颜色
+    "selectedColor": "#ff9400" // 已选择状态 的字体颜色（特性：只能设置 16 进制的格式）
+    // borderStyle: "",                      // 上边框颜色。特性：只支持（black：黑色）（white：白色）
+    // "backgroundColor": "#ff5533",         // 背景颜色
+    // "position": "top"                     // tabBar 显示在顶部（特性：不会显示 图标）
+  }
+}

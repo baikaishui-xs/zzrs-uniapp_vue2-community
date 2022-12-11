@@ -1,0 +1,44 @@
+{
+  "id": "3811599",
+  "name": "zzrs-uniapp_vue2-community",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "8820145",
+      "name": "赞",
+      "font_class": "zan",
+      "unicode": "e6c9",
+      "unicode_decimal": 59081
+    },
+    {
+      "icon_id": "8820146",
+      "name": "转发",
+      "font_class": "zhuanfa",
+      "unicode": "e6ca",
+      "unicode_decimal": 59082
+    },
+    {
+      "icon_id": "8820359",
+      "name": "聊天",
+      "font_class": "liaotian",
+      "unicode": "e6cb",
+      "unicode_decimal": 59083
+    },
+    {
+      "icon_id": "33265466",
+      "name": "赞-copy",
+      "font_class": "cai",
+      "unicode": "e6cc",
+      "unicode_decimal": 59084
+    },
+    {
+      "icon_id": "12097373",
+      "name": "编辑",
+      "font_class": "bianji",
+      "unicode": "e640",
+      "unicode_decimal": 58944
+    }
+  ]
+}
