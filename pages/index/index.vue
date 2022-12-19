@@ -2,19 +2,16 @@
   <view class="app-container">
     <!-- 顶部选项卡 -->
     <scroll-view class="scroll-view" scroll-x :scroll-into-view="scrollInto" scroll-with-animation>
-      <view v-for="(item, index) in tabBars" :key="item.name" class="item" :class="{checked: tabIndex === index}"
-        @click="changeTab(index)" :id="'tab' + index">{{item}}</view>
+      <view v-for="(item, index) in tabBars" :key="item.classname" class="item" :class="{checked: tabIndex === index}"
+        @click="changeTab(index)" :id="'tab' + index">{{item.classname}}</view>
     </scroll-view>
     <!-- 选项卡列表 -->
-    <swiper class="tabList" :duration="150" :current="tabIndex" @change="onChangeTab"
-      :style="'height:' + tabListHeight + 'px;'">
-      <swiper-item v-for="(item, index) in tabBars" :key="index" class="swiper-item">
+    <swiper :duration="150" :current="tabIndex" @change="onChangeTab" :style="'height:' + tabListHeight + 'px;'">
+      <swiper-item v-for="(item, index) in tabList" :key="index" class="swiper-item">
         <scroll-view scroll-y="true" :style="'height:' + tabListHeight + 'px;'" @scrolltolower="upLoading">
-          <!-- 文章列表 -->
-          <block v-for="(item1, index1) in list[index]" :key="index1">
-            <ArticleList class="items" :item="item1" :index="index1" @support="support" @unsupport="unsupport"
-              @getAssignTopicCategoryList="getAssignTopicCategoryList" @setDingCaiOperation="setDingCaiOperation">
-            </ArticleList>
+          <block v-for="(item1, index1) in item" :key="index1">
+            <ArticleList :item="item1" :oneWeiArrayIndex="index" :twoWeiArrayIndex="index1"
+              @setUpDownData="setUpDownData"></ArticleList>
           </block>
           <!-- 上拉加载更多 -->
           <view class="upLoader">{{upLoaderText}}</view>
@@ -25,17 +22,15 @@
 </template>
 
 <script>
-  import ArticleList from './components/ArticleList.vue'
   import {
-    getAllArticleCategory,
+    getTabBars,
     getAssignTopicCategoryList
   } from '@/api/allApi.js'
+  import ArticleList from '@/components/ArticleList.vue'
   export default {
     data() {
       return {
-        // 文章列表
-        list: [],
-        // 顶部选项卡 列表
+        // 顶部选项卡分类列表
         tabBars: [],
         // 当前选项卡索引
         tabIndex: 0,
@@ -43,128 +38,126 @@
         scrollInto: '',
         // 选项卡列表高度
         tabListHeight: 600,
-        // 所有选项卡请求数据的页数
-        allPage: [],
-        // 当前是否为上拉刷新状态
-        isUpLoading: false,
-        // 上拉加载更多文本
+        // 选项卡列表数据
+        tabList: [],
+        // 请求的页数
+        page: 1,
+        // 上拉加载更多，文本
         upLoaderText: '加载中...',
-        // 是否没有下一页数据了
-        isPageNull: false,
-        // 当前是否为顶踩操作
-        isDingCaiOperation: false
+        // 是否为上拉加载
+        isUpLoading: false
       }
     },
     methods: {
+      // 获取顶部选项卡分类列表
+      async getTabBars() {
+        const result = await getTabBars()
+        this.tabBars = result.data.list
+      },
       // 切换选项卡
       changeTab( index ) {
         this.tabIndex = index
         // 切换选项卡后，自动滚动到最左边
         this.scrollInto = 'tab' + index
-        if ( !this.list[this.tabIndex] ) {
-          console.log( 1 )
-          this.upLoaderText = '加载中...'
-        }
       },
-      // 监听 滑动
+      // 监听滑动
       onChangeTab( e ) {
-        // 获取 当前选项卡列表索引
+        // 获取当前选项卡列表索引
         this.changeTab( e.detail.current )
-        this.getAssignTopicCategoryList()
+        this.getTabList()
       },
-      onLoad() {
-        uni.getSystemInfo( {
-          success: res => {
-            // 获取当前选项卡列表高度 // 100 为选项卡高度，单位为 rpx，需要转换成 px 进行计算，因为 res.windowHeight 的单位为 px
-            this.tabListHeight = res.windowHeight - uni.upx2px( 100 )
-          }
-        } )
-      },
-      // 获取所有文章分类
-      async getAllArticleCategory() {
-        let result = await getAllArticleCategory()
-        let newResult = result.data.list.map( ( item, index ) => {
-          return item.classname
-        } );
-        this.tabBars = newResult
-        for ( var i = 0; i < newResult.length; i++ ) {
-          this.allPage[i] = 1
+      // 获取选项卡列表数据
+      async getTabList() {
+        // 当前选项卡列表没有数据 || 当前为上拉加载
+        if ( this.tabList[this.tabIndex].length == 0 || this.isUpLoading ) {
+          const result = await getAssignTopicCategoryList( this.tabBars[this.tabIndex].id, this.page )
+          this.$set( this.tabList, this.tabIndex, [...this.tabList[this.tabIndex], ...result.data.list] )
         }
       },
-      // 指定文章分类下的文章列表
-      async getAssignTopicCategoryList() {
-        if ( this.list.length === 0 || !this.list[this.tabIndex] || this.isUpLoading || this.isDingCaiOperation ) {
-          const result = await getAssignTopicCategoryList( this.tabIndex + 1, this.allPage[this.tabIndex] )
-          let newResult = result.data.list
-          if ( this.list[this.tabIndex] && !this.isDingCaiOperation ) {
-            newResult = [...this.list[this.tabIndex], ...result.data.list]
-          }
-          if ( !result.data.list.leng ) {
-            this.isPageNull = true
-          }
-          this.$set( this.list, this.tabIndex, newResult )
-          this.isUpLoading = false
-          this.isDingCaiOperation = false
+      // 初始化选项卡列表数据（解决 tabList 长度只为 1，导致选项卡不能左右滑动的问题）
+      initTabList() {
+        for ( let i = 0; i < this.tabBars.length; i++ ) {
+          this.tabList[i] = []
         }
       },
       // 上拉刷新
       async upLoading() {
         this.upLoaderText = '加载中...'
-        this.allPage[this.tabIndex] = ++this.allPage[this.tabIndex]
         this.isUpLoading = true
-        await this.getAssignTopicCategoryList()
+        this.page = ++this.page
+        await this.getTabList()
+        // 是否没有下一页数据了
         if ( this.isPageNull ) {
           this.upLoaderText = '已经没有数据了'
         } else {
           this.upLoaderText = '上拉加载更多'
         }
       },
-      setDingCaiOperation() {
-        this.isDingCaiOperation = true
+      // 修改顶踩数据
+      setUpDownData( type, item, oneWeiArrayIndex, twoWeiArrayIndex ) {
+        // 当前是否点击踩
+        if ( type ) {
+          ++this.tabList[oneWeiArrayIndex][twoWeiArrayIndex].cai_count
+          // 值是否不为 0【解决当值为 0 时，出现负值的为题】
+          if ( this.tabList[oneWeiArrayIndex][twoWeiArrayIndex].ding_count ) {
+            --this.tabList[oneWeiArrayIndex][twoWeiArrayIndex].ding_count
+          }
+        } else {
+          ++this.tabList[oneWeiArrayIndex][twoWeiArrayIndex].ding_count
+          // 值是否不为 0【解决当值为 0 时，出现负值的为题】
+          if ( this.tabList[oneWeiArrayIndex][twoWeiArrayIndex].cai_count ) {
+            --this.tabList[oneWeiArrayIndex][twoWeiArrayIndex].cai_count
+          }
+
+        }
       }
-    },
-    async created() {
-      await this.getAllArticleCategory()
-      this.getAssignTopicCategoryList()
     },
     components: {
       ArticleList
+    },
+    async onLoad() {
+      await this.getTabBars()
+      this.initTabList()
+      await this.getTabList()
+      // 异步获取系统信息
+      uni.getSystemInfo( {
+        success: res => {
+          // 获取当前选项卡列表高度 // 100 为选项卡高度，单位为 rpx，需要转换成 px 进行计算，因为 res.windowHeight 的单位为 px
+          this.tabListHeight = res.windowHeight - uni.upx2px( 100 )
+        }
+      } )
     }
   }
 </script>
 
 <style lang="scss">
-  .tabList {
-    .items {
-      border-bottom: 6rpx solid #F5F4F4;
-    }
-
-    .upLoader {
-      height: 80rpx;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #A39D9C;
-      background: #fff;
-    }
-  }
-
-  .checked {
-    color: #e82626;
-  }
-
   .scroll-view {
     width: 750rpx;
     white-space: nowrap;
+    border-bottom: 4rpx solid #F5F5F5;
     background: #fff;
-    border-bottom: 8rpx solid #F5F4F4;
 
     .item {
-      width: 200rpx;
+      width: 160rpx;
       height: 100rpx;
       display: inline-block;
       text-align: center;
       line-height: 100rpx;
+      font-size: 30rpx
     }
+
+    .checked {
+      font-size: 35rpx;
+      color: #e82626;
+    }
+  }
+
+  .upLoader {
+    height: 80rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #A39D9C;
+    background: #fff;
   }
 </style>

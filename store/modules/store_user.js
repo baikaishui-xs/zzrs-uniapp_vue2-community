@@ -18,7 +18,7 @@ const actions = {
   // 手机登录
   async phoneLogin(context, arg) {
     const result = await phoneLogin(arg.phone, arg.code)
-    context.commit('setUserInfo', result)
+    context.commit('setUserInfo', result.data)
   }
 }
 

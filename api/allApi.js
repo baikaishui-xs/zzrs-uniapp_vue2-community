@@ -22,7 +22,7 @@ export function phoneLogin(phone, code) {
   })
 }
 // 获取所有文章分类
-export function getAllArticleCategory() {
+export function getTabBars() {
   return request.get({
     url: '/v1/postclass'
   })
@@ -59,5 +59,21 @@ export function unfollow(follow_id) {
     data: {
       follow_id
     }
+  })
+}
+// 搜索文章
+export function searchArticle(keyword, page) {
+  return request.post({
+    url: '/v1/search/post',
+    data: {
+      keyword,
+      page
+    }
+  })
+}
+// 获取我关注的人的公开文章列表
+export function getFollowOpenArticleList(page) {
+  return request.get({
+    url: `/v1/followpost/${page}`,
   })
 }

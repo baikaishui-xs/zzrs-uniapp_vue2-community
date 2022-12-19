@@ -7,9 +7,7 @@ class ClAxios {
         args.url = config.baseURL + args.url
       },
       // 响应拦截器
-      success(args) {
-        // console.log(args.data.data.list)
-      },
+      success(args) {},
       // 请求失败回调
       fail(err) {
         console.log('interceptor-fail', err)

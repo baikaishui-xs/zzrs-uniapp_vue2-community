@@ -7,7 +7,7 @@
         "titleNView": {
           "searchInput": {
             "align": "center",
-            "backgroundColor": "#F5F4F2",
+            "backgroundColor": "#e6e6e6",
             "borderRadius": "4px",
             "disabled": true,
             "placeholder": "搜索帖子",
@@ -20,18 +20,22 @@
             "fontSize": "22px",
             "fontSrc": "/common/iconfont/iconfont.ttf",
             // 这里不要填写 class 类型的，要填写 Unicode 类型的字体标。并将前面的 &ex 换成 \u。比如：&#xe640 → \ue640
-            "text": "\ue640"
+            "text": "\ue6c9"
           }]
         }
       }
     }
   }, {
+    // 动态页
     "path": "pages/news/news",
     "style": {
       "navigationBarTitleText": "",
-      "enablePullDownRefresh": false
+      "enablePullDownRefresh": false,
+      "app-plus": {
+        // 关闭原生导航栏
+        "titleNView": false
+      }
     }
-
   }, {
     "path": "pages/msg/msg",
     "style": {
@@ -46,6 +50,42 @@
       "enablePullDownRefresh": false
     }
 
+  }, {
+    "path": "pages/search/search",
+    "style": {
+      "navigationBarTitleText": "",
+      "enablePullDownRefresh": false,
+      "app-plus": {
+        "titleNView": {
+          "searchInput": {
+            "align": "center",
+            "backgroundColor": "#e6e6e6",
+            "borderRadius": "4px",
+            "disabled": false,
+            "placeholder": "搜索帖子",
+            "placeholderColor": "#6D6C67"
+          },
+          "buttons": [{
+            "color": "#333333",
+            "colorPressed": "#FD597C",
+            "float": "right",
+            "fontSize": "18px",
+            "fontSrc": "/common/iconfont/iconfont.ttf",
+            // 这里不要填写 class 类型的，要填写 Unicode 类型的字体标。并将前面的 &ex 换成 \u。比如：&#xe640 → \ue640
+            "text": "搜索"
+          }]
+        }
+      }
+    }
+  }, {
+    "path": "pages/release/release",
+    "style": {
+      "navigationBarTitleText": "",
+      "enablePullDownRefresh": false,
+      "app-plus": {
+        "titleNView": false
+      }
+    }
   }],
   "globalStyle": {
     "navigationBarTextStyle": "black",
