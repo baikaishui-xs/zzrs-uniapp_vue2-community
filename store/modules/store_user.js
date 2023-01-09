@@ -19,6 +19,9 @@ const actions = {
   async phoneLogin(context, arg) {
     const result = await phoneLogin(arg.phone, arg.code)
     context.commit('setUserInfo', result.data)
+    uni.navigateBack({
+      delta: 1
+    });
   }
 }
 

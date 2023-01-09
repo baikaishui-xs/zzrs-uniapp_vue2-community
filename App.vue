@@ -14,7 +14,7 @@
 
 <style lang="scss">
   @import "./common/uni.css";
-  @import "@/common/iconfont/iconfont.css";
+  @import "@/static/iconfont.css";
   @import "./common/animate.css";
   @import "./static/styles/common.css";
   @import '@/static/styles/base.css';

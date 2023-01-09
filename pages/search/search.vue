@@ -1,11 +1,9 @@
 <template>
   <view class="search-container">
-    <view class="header" v-if="articleList.length === 0">搜索历史</view>
+    <view class="header" v-if="tabList.length === 0">搜索历史</view>
     <view class="body" style="height: 1000rpx;">
-      <block v-for="(item, index) in articleList" :key="index">
-        <ArticleList class="items" :item="item" :index="index" @getAssignTopicCategoryList="searchArticle"
-          @setDingCaiOperation="setDingCaiOperation">
-        </ArticleList>
+      <block v-for="(item, index) in tabList" :key="index">
+        <ArticleList :item="item" @setUpDownData="setUpDownData" @getIndex="getIndex(index)"></ArticleList>
       </block>
     </view>
   </view>
@@ -22,18 +20,41 @@
         // 搜索的文章
         keyword: '',
         // 文章列表
-        articleList: []
+        tabList: [],
+        // tabList 一维数组下标
+        oneWeiArrayIndex: null,
       };
     },
     methods: {
       // 搜索文章
       async searchArticle() {
         if ( this.keyword === '' ) {
-          this.articleList = []
+          this.tabList = []
           return
         }
         const result = await searchArticle( this.keyword, 1 )
-        this.articleList = result.data.list
+        this.tabList = result.data.list
+      },
+      // 修改顶踩数据
+      setUpDownData( type, item, isTwoWeiArray ) {
+        // 当前是否点击踩
+        if ( type ) {
+          ++this.tabList[this.oneWeiArrayIndex].cai_count
+          // 值是否不为 0【解决当值为 0 时，出现负值的为题】
+          if ( this.tabList[this.oneWeiArrayIndex].ding_count ) {
+            --this.tabList[this.oneWeiArrayIndex].ding_count
+          }
+        } else {
+          ++this.tabList[this.oneWeiArrayIndex].ding_count
+          // 值是否不为 0【解决当值为 0 时，出现负值的为题】
+          if ( this.tabList[this.oneWeiArrayIndex].cai_count ) {
+            --this.tabList[this.oneWeiArrayIndex].cai_count
+          }
+        }
+      },
+      // 获取当前文章数据的下标
+      getIndex( oneWeiArrayIndex ) {
+        this.oneWeiArrayIndex = oneWeiArrayIndex
       }
     },
     components: {

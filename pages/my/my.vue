@@ -1,9 +1,21 @@
 <template>
-  <view>
-    我的页
-    <input type="text" v-model="phone">
-    <button @click="getCode">获取验证码</button>
-    <button @click="phoneLogin">登录</button>
+  <!-- 我的页 -->
+  <view class="my-container">
+    <!-- 登录区 -->
+    <view class="login-area" v-if="!$store.state.user.userInfo.id">
+      <button @click="goLoginPage">登录，体验更多功能</button>
+    </view>
+    <!-- 用户信息区 -->
+    <view class="userinfo-area" v-if="$store.state.user.userInfo.id">
+      <!-- 用户头像 -->
+      <image class="user-img" mode="aspectFill" :src="$store.state.user.userInfo.userpic"></image>
+      <!-- 用户信息 -->
+      <view class="userinfo">
+        <view class="username">当前登录账号：{{$store.state.user.userInfo.username}}</view>
+      </view>
+    </view>
+    <!-- 退出登录按钮 -->
+    <button class="upLogin" v-if="$store.state.user.userInfo.id" @click="upLogin">退出登录</button>
   </view>
 </template>
 
@@ -11,43 +23,63 @@
   import {
     getCode,
     phoneLogin,
-    getAllArticleCategory
   } from '@/api/allApi.js'
   import {
     mapState
   } from 'vuex'
   export default {
     data() {
-      return {
-        // 验证码
-        code: null,
-        // 手机号
-        phone: 15266666666
-      };
+      return {};
     },
     methods: {
-      // 获取验证码
-      async getCode() {
-        const result = await getCode( this.phone )
-        this.code = result.msg.slice( 4, 8 )
-      },
-      // 手机登录
-      async phoneLogin() {
-        this.$store.dispatch( 'user/phoneLogin', {
-          phone: this.phone,
-          code: this.code
+      // 前往登录页
+      goLoginPage() {
+        uni.navigateTo( {
+          url: '/pages/login/login'
         } )
-        uni.showToast( {
-          title: '登录成功',
-        } );
+      },
+      // 退出登录
+      upLogin() {
+        this.$store.commit( 'user/setUserInfo', {} )
       }
     },
-    async created() {
-      await getAllArticleCategory()
-    },
+    async created() {},
+    onNavigationBarButtonTap() {
+      uni.navigateTo( {
+        url: '/pages/user-set/user-set'
+      } )
+    }
   }
 </script>
 
 <style lang="scss">
+  .my-container {
+    .login-area {
+      height: 200rpx;
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
+      .login {
+        margin-right: 10rpx;
+        font-size: 30rpx;
+      }
+
+      .icon-forward {}
+    }
+
+    .userinfo-area {
+      .user-img {}
+
+      .userinfo {
+        .username {}
+
+        .article {}
+      }
+    }
+
+    .upLogin {
+      height: 92rpx;
+    }
+  }
 </style>

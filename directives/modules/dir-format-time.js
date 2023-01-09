@@ -1,10 +1,10 @@
-// 格式化时间 和 日期
-
+import Vue from 'vue'
 import dayjs from 'dayjs'
 
-export default function(app) {
-  app.directive("format-time", {
-    mounted(el, bindings) {
+// 格式化时间和日期
+export function formatTime() {
+  Vue.directive("format-time", {
+    bind(el, bindings) {
       let formatString = bindings.value;
       if (!formatString) {
         formatString = "YYYY-MM-DD HH:mm:ss"

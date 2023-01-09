@@ -10,8 +10,8 @@
       <swiper-item v-for="(item, index) in tabList" :key="index" class="swiper-item">
         <scroll-view scroll-y="true" :style="'height:' + tabListHeight + 'px;'" @scrolltolower="upLoading">
           <block v-for="(item1, index1) in item" :key="index1">
-            <ArticleList :item="item1" :oneWeiArrayIndex="index" :twoWeiArrayIndex="index1"
-              @setUpDownData="setUpDownData"></ArticleList>
+            <ArticleList :item="item1" @setUpDownData="setUpDownData" @getIndex="getIndex(index, index1)">
+            </ArticleList>
           </block>
           <!-- 上拉加载更多 -->
           <view class="upLoader">{{upLoaderText}}</view>
@@ -45,7 +45,11 @@
         // 上拉加载更多，文本
         upLoaderText: '加载中...',
         // 是否为上拉加载
-        isUpLoading: false
+        isUpLoading: false,
+        // tabList 一维数组下标
+        oneWeiArrayIndex: null,
+        // tabList 二维数组下标
+        twoWeiArrayIndex: null
       }
     },
     methods: {
@@ -94,22 +98,26 @@
         }
       },
       // 修改顶踩数据
-      setUpDownData( type, item, oneWeiArrayIndex, twoWeiArrayIndex ) {
+      setUpDownData( type, item, isTwoWeiArray ) {
         // 当前是否点击踩
         if ( type ) {
-          ++this.tabList[oneWeiArrayIndex][twoWeiArrayIndex].cai_count
+          ++this.tabList[this.oneWeiArrayIndex][this.twoWeiArrayIndex].cai_count
           // 值是否不为 0【解决当值为 0 时，出现负值的为题】
-          if ( this.tabList[oneWeiArrayIndex][twoWeiArrayIndex].ding_count ) {
-            --this.tabList[oneWeiArrayIndex][twoWeiArrayIndex].ding_count
+          if ( this.tabList[this.oneWeiArrayIndex][this.twoWeiArrayIndex].ding_count ) {
+            --this.tabList[this.oneWeiArrayIndex][this.twoWeiArrayIndex].ding_count
           }
         } else {
-          ++this.tabList[oneWeiArrayIndex][twoWeiArrayIndex].ding_count
+          ++this.tabList[this.oneWeiArrayIndex][this.twoWeiArrayIndex].ding_count
           // 值是否不为 0【解决当值为 0 时，出现负值的为题】
-          if ( this.tabList[oneWeiArrayIndex][twoWeiArrayIndex].cai_count ) {
-            --this.tabList[oneWeiArrayIndex][twoWeiArrayIndex].cai_count
+          if ( this.tabList[this.oneWeiArrayIndex][this.twoWeiArrayIndex].cai_count ) {
+            --this.tabList[this.oneWeiArrayIndex][this.twoWeiArrayIndex].cai_count
           }
-
         }
+      },
+      // 获取当前文章数据的下标
+      getIndex( oneWeiArrayIndex, twoWeiArrayIndex ) {
+        this.oneWeiArrayIndex = oneWeiArrayIndex
+        this.twoWeiArrayIndex = twoWeiArrayIndex
       }
     },
     components: {
@@ -125,6 +133,17 @@
           // 获取当前选项卡列表高度 // 100 为选项卡高度，单位为 rpx，需要转换成 px 进行计算，因为 res.windowHeight 的单位为 px
           this.tabListHeight = res.windowHeight - uni.upx2px( 100 )
         }
+      } )
+    },
+    // 搜索栏输入框点击事件
+    onNavigationBarSearchInputClicked() {
+      uni.navigateTo( {
+        url: '/pages/search/search'
+      } )
+    },
+    onNavigationBarButtonTap() {
+      uni.navigateTo( {
+        url: '/pages/release/release'
       } )
     }
   }
@@ -147,7 +166,8 @@
     }
 
     .checked {
-      font-size: 35rpx;
+      font-size: 40rpx;
+      font-weight: 900;
       color: #e82626;
     }
   }

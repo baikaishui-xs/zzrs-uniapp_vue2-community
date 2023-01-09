@@ -1,92 +1,155 @@
 {
   "pages": [{
-    "path": "pages/index/index",
-    "style": {
-      "navigationBarTitleText": "uni-app",
-      "app-plus": {
-        "titleNView": {
-          "searchInput": {
-            "align": "center",
-            "backgroundColor": "#e6e6e6",
-            "borderRadius": "4px",
-            "disabled": true,
-            "placeholder": "搜索帖子",
-            "placeholderColor": "#6D6C67"
-          },
-          "buttons": [{
-            "color": "#333333",
-            "colorPressed": "#FD597C",
-            "float": "right",
-            "fontSize": "22px",
-            "fontSrc": "/common/iconfont/iconfont.ttf",
-            // 这里不要填写 class 类型的，要填写 Unicode 类型的字体标。并将前面的 &ex 换成 \u。比如：&#xe640 → \ue640
-            "text": "\ue6c9"
-          }]
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "uni-app",
+        "app-plus": {
+          "titleNView": {
+            "searchInput": {
+              "align": "center",
+              "backgroundColor": "#e6e6e6",
+              "borderRadius": "4px",
+              "disabled": true,
+              "placeholder": "搜索帖子",
+              "placeholderColor": "#6D6C67"
+            },
+            "buttons": [{
+              "color": "#333333",
+              "colorPressed": "#FD597C",
+              "float": "right",
+              "fontSize": "22px",
+              "fontSrc": "./static/iconfont.ttf",
+              // 这里不要填写 class 类型的，要填写 Unicode 类型的字体标。并将前面的 &ex 换成 \u。比如：&#xe640 → \ue640
+              "text": "\ue640"
+            }]
+          }
         }
       }
-    }
-  }, {
-    // 动态页
-    "path": "pages/news/news",
-    "style": {
-      "navigationBarTitleText": "",
-      "enablePullDownRefresh": false,
-      "app-plus": {
-        // 关闭原生导航栏
-        "titleNView": false
-      }
-    }
-  }, {
-    "path": "pages/msg/msg",
-    "style": {
-      "navigationBarTitleText": "",
-      "enablePullDownRefresh": false
-    }
-
-  }, {
-    "path": "pages/my/my",
-    "style": {
-      "navigationBarTitleText": "",
-      "enablePullDownRefresh": false
-    }
-
-  }, {
-    "path": "pages/search/search",
-    "style": {
-      "navigationBarTitleText": "",
-      "enablePullDownRefresh": false,
-      "app-plus": {
-        "titleNView": {
-          "searchInput": {
-            "align": "center",
-            "backgroundColor": "#e6e6e6",
-            "borderRadius": "4px",
-            "disabled": false,
-            "placeholder": "搜索帖子",
-            "placeholderColor": "#6D6C67"
-          },
-          "buttons": [{
-            "color": "#333333",
-            "colorPressed": "#FD597C",
-            "float": "right",
-            "fontSize": "18px",
-            "fontSrc": "/common/iconfont/iconfont.ttf",
-            // 这里不要填写 class 类型的，要填写 Unicode 类型的字体标。并将前面的 &ex 换成 \u。比如：&#xe640 → \ue640
-            "text": "搜索"
-          }]
+    }, {
+      // 动态页
+      "path": "pages/news/news",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false,
+        "app-plus": {
+          // 关闭原生导航栏
+          "titleNView": false
         }
       }
-    }
-  }, {
-    "path": "pages/release/release",
-    "style": {
-      "navigationBarTitleText": "",
-      "enablePullDownRefresh": false,
-      "app-plus": {
-        "titleNView": false
+    }, {
+      "path": "pages/msg/msg",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
       }
+
+    }, {
+      // 我的页
+      "path": "pages/my/my",
+      "style": {
+        "navigationBarTitleText": "我的",
+        "enablePullDownRefresh": false,
+        "app-plus": {
+          "titleNView": {
+            "buttons": [{
+              "type": "menu"
+            }]
+          }
+        }
+      }
+
+    }, {
+      "path": "pages/search/search",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false,
+        "app-plus": {
+          "titleNView": {
+            "searchInput": {
+              "align": "center",
+              "backgroundColor": "#e6e6e6",
+              "borderRadius": "4px",
+              "disabled": false,
+              "placeholder": "搜索帖子",
+              "placeholderColor": "#6D6C67"
+            },
+            "buttons": [{
+              "color": "#333333",
+              "colorPressed": "#FD597C",
+              "float": "right",
+              "fontSize": "18px",
+              "fontSrc": "/common/iconfont/iconfont.ttf",
+              // 这里不要填写 class 类型的，要填写 Unicode 类型的字体标。并将前面的 &ex 换成 \u。比如：&#xe640 → \ue640
+              "text": "搜索"
+            }]
+          }
+        }
+      }
+    }, {
+      "path": "pages/release/release",
+      "style": {
+        "navigationBarTitleText": "发布文章",
+        "enablePullDownRefresh": false
+      }
+    }, {
+      // 话题选项页
+      "path": "pages/topicOptions/topicOptions",
+      "style": {
+        "navigationBarTitleText": "选择话题",
+        "enablePullDownRefresh": false
+      }
+    }, {
+      "path": "pages/demo/demo",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    },
+    // 话题详情页
+    {
+      "path": "pages/topicDetail/topicDetail",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false,
+        "app-plus": {
+          "titleNView": {
+            "type": "transparent",
+            "buttons": [{
+              "type": "menu"
+            }]
+          }
+        }
+      }
+    }, {
+      // 设置页
+      "path": "pages/user-set/user-set",
+      "style": {
+        "navigationBarTitleText": "设置",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      // 登录页
+      "path": "pages/login/login",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false,
+        "app-plus": {
+          "titleNView": false
+        }
+      }
+
+    }, {
+      // 修改资料页
+      "path": "pages/user-userinfo/user-userinfo",
+      "style": {
+        "navigationBarTitleText": "修改资料",
+        "enablePullDownRefresh": false
+      }
+
     }
-  }],
+  ],
   "globalStyle": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "uni-app",

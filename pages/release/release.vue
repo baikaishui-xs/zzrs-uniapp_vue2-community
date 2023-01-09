@@ -1,56 +1,87 @@
 <template>
+  <!-- 发布页 -->
   <view class="release-container">
     <!-- 自定义导航栏 -->
-    <uni-nav-bar left-icon="back" left-text="返回" @clickLeft="goBack">
-      <view class="uni-nav-bar">
-        <text class="title">所有人可见</text>
+    <!-- <uni-nav-bar left-icon="back" left-text="返回" @clickLeft="goBack">
+      <view class="uni-nav-bar" @click="switchSee">
+        <text class="title">{{releaseArticleApiParameter.isopen === 0 ? '仅自己可见' : '所有人可见' }}</text>
         <uni-icons type="gear" size="26"></uni-icons>
       </view>
-    </uni-nav-bar>
+    </uni-nav-bar> -->
     <!-- 多行输入框 -->
-    <textarea class="textarea" v-model="content" placeholder="说一句话吧~" />
+    <textarea class="textarea" v-model="releaseArticleApiParameter.text" placeholder="说一句话吧~" />
     <!-- 多图上传 -->
-    <view class="up-image">
-      <uni-file-picker v-model="imageList" limit="9" @select="select">
+    <view class="up-image" v-show="releaseArticleApiParameter.imglist !== '[]'">
+      <uni-file-picker ref="files" v-model="releaseArticleApiParameter.imageList" limit="9" @select="select">
       </uni-file-picker>
     </view>
     </uni-section>
     <!-- 底部 -->
     <view class="bottom-box">
       <view class="left-box">
+        <!-- 分类 -->
         <view class="icon">
-          <uni-icons type="bars" size="30"></uni-icons>
+          <picker mode="selector" :range="categoryOptional" @change="choosePostClass">
+            <uni-icons type="bars" size="30"></uni-icons>
+          </picker>
         </view>
-        <view class="icon">
+        <!-- 话题 -->
+        <view class="icon" @click="clickTopic">
           <uni-icons type="chatboxes-filled" size="30"></uni-icons>
         </view>
-        <view class="icon">
+        <!-- 图片 -->
+        <view class="icon" @click="clickUploadImage">
           <uni-icons type="image" size="30"></uni-icons>
         </view>
       </view>
       <view class="right-box">
-        <button class="release-btn">发布</button>
+        <!-- 发布 -->
+        <button class="release-btn" @click="releaseArticle">发布</button>
       </view>
     </view>
   </view>
 </template>
 
 <script>
+  import {
+    releaseArticle,
+    getTabBars
+  } from '@/api/allApi.js'
   export default {
     data() {
       return {
-        // 多行输入框内容
-        content: '',
-        // 多图上传列表
-        imageList: [],
         // 是否显示模态弹框
-        isShowModal: false
+        isShowModal: false,
+        // 发布文章 api 参数
+        releaseArticleApiParameter: {
+          // 上传的图片列表
+          imglist: '[]',
+          // 内容
+          text: '',
+          // 可见状态（仅自己可见：0）（所有人可见：1）
+          isopen: 1,
+          // 话题 id
+          topic_id: null,
+          // 分类 id
+          post_class_id: null,
+        },
+        // 分类可选项
+        categoryOptional: [],
       };
     },
     methods: {
+      async getCategoryOptional() {
+        const result = await getTabBars()
+        this.categoryOptional = result.data.list.map( ( item ) => {
+          return item.classname
+        } );
+      },
       // 图片上传成功时触发
       select( e ) {
-        this.imageList = [...this.imageList, ...e.tempFiles]
+        console.log( '图片上传成功，（因为没有云盘，这里就模拟成功的提示即可）' )
+        // 假数据，这里是为了让图片显示
+        this.releaseArticleApiParameter.imglist = '[1]'
+        // this.releaseArticleApiParameter.imglist = [...this.releaseArticleApiParameter, ...e.tempFiles]
       },
       // 返回上一页
       goBack() {
@@ -83,6 +114,48 @@
           key: 'release',
           data: JSON.stringify( data )
         } )
+      },
+      // 切换可见状态
+      switchSee() {
+        // 显示操作菜单
+        uni.showActionSheet( {
+          itemList: ['仅自己可见', '所有人可见'],
+          success: async ( res ) => {
+            if ( res.tapIndex === 0 ) {
+              // 当前选中的是 仅自己可见
+              this.releaseArticleApiParameter.isopen = 0
+            } else if ( res.tapIndex === 1 ) {
+              // 当前选中的是 所有人可见
+              this.releaseArticleApiParameter.isopen = 1
+            }
+          },
+          fail: ( res ) => {}
+        } );
+      },
+      // 选择一个分类可选项时触发
+      choosePostClass( e ) {
+        this.releaseArticleApiParameter.post_class_id = ++e.target.value
+      },
+      // 点击话题后触发
+      clickTopic() {
+        uni.navigateTo( {
+          url: '/pages/topicOptions/topicOptions'
+        } )
+      },
+      // 点击图片上传图标后触发
+      clickUploadImage() {
+        // 调用选择图片上传窗口
+        this.$refs.files.choose()
+      },
+      // 发布文章
+      async releaseArticle() {
+        console.log( this.releaseArticleApiParameter )
+        const result = await releaseArticle( this.releaseArticleApiParameter );
+        if ( result.msg === '发布成功' ) {
+          uni.navigateBack( {
+            delta: 1
+          } );
+        }
       }
     },
     onBackPress() {
@@ -120,6 +193,11 @@
             this.imageList = result.imageList
           }
         }
+      } )
+      this.getCategoryOptional()
+      // 获取话题 id
+      uni.$on( 'getTopicId', ( id ) => {
+        this.releaseArticleApiParameter.topic_id = id
       } )
     }
   }

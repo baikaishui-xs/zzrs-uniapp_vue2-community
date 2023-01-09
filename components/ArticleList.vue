@@ -1,6 +1,6 @@
 <!-- 文章列表 -->
 <template>
-  <view class="artical-list-container">
+  <view class="artical-list-container animate__animated animate__fadeIn">
     <view class="header">
       <!-- 用户信息 -->
       <view class="userInfo-box">
@@ -8,32 +8,37 @@
           <image class="userpic" :src="item.user.userpic"></image>
           <view class="right-box">
             <view class="username">{{item.user.username}}</view>
-            <view class="time">{{item.create_time}}</view>
+            <view class="time" v-format-time="'MM-DD HH:mm'">{{item.create_time}}</view>
           </view>
         </view>
         <!-- 关注 -->
-        <view class="follow-box" :class="isFollow ? 'follow' : 'unFollow'" @click="clickFollow">
+        <view class="follow-box animate__animated click" :class="isFollow ? 'follow' : 'unFollow'"
+          hover-class="animate__pulse" @click="clickFollow">
           {{isFollow ? '已关注' : '关注'}}
         </view>
       </view>
     </view>
     <view class="body">
       <view class="content">{{item.content}}</view>
-      <image class="image" mode="aspectFill" :src="item.images[0].url" v-if="item.images.length !== 0"></image>
+      <!-- <image class="image" mode="aspectFill" :src="item.titlepic" v-image-error @error="error"> -->
+      <image class="image" mode="aspectFill" :src="item.titlepic" v-if="item.titlepic" v-image-error @error='error'>
+      </image>
     </view>
     <view class="footer">
       <!-- 顶 -->
-      <view class="up" :class="isUpDown === 0 ? 'checked' : ''" @click="upDownOperation(0)">
+      <view class="up animate__animated click" :class="isUpDown === 0 ? 'checked' : ''" hover-class="animate__pulse"
+        @click="upDownOperation(0)">
         <uni-icons class="icon" type="hand-up" size="30" :color="isUpDown === 0 ? '#FD597B' : ''"></uni-icons>
         <text class="text">{{item.ding_count}}</text>
       </view>
       <!-- 踩 -->
-      <view class="down" :class="isUpDown === 1 ? 'checked' : ''" @click="upDownOperation(1)">
+      <view class="down animate__animated click" :class="isUpDown === 1 ? 'checked' : ''" hover-class="animate__pulse"
+        @click="upDownOperation(1)">
         <uni-icons class="icon" type="hand-down" size="30" :color="isUpDown === 1 ? 'FD597B' : ''"></uni-icons>
         <text class="text">{{item.cai_count}}</text>
       </view>
       <!-- 评论 -->
-      <view class="chat">
+      <view class="chat animate__animated click" hover-class="animate__pulse">
         <uni-icons class="icon" type="chat" size="30"></uni-icons>
         <text class="text">{{item.comment_count}}</text>
       </view>
@@ -62,7 +67,7 @@
       },
       twoWeiArrayIndex: {
         type: Number
-      }
+      },
     },
     data() {
       return {
@@ -106,19 +111,24 @@
         const result = await topStepOperation( this.item.id, type )
         // 是否成功进行顶踩操作
         if ( result.msg === 'ok' ) {
-          this.$emit( 'setUpDownData', type, this.item, this.oneWeiArrayIndex, this.twoWeiArrayIndex )
+          await this.$emit( 'getIndex' )
+          await this.$emit( 'setUpDownData', type, this.item )
           this.isUpDown = type
         } else {
           uni.showToast( {
             title: '请勿重复操作！',
+            icon: 'none'
           } );
         }
+      },
+      error() {
+        console.log( '组件中的 error 事件被触发' )
       }
     },
     created() {
       this.ifFollow()
       this.ifUpDown()
-    }
+    },
   }
 </script>
 
@@ -126,6 +136,7 @@
   .artical-list-container {
     border-bottom: 16rpx solid #F5F5F5;
     padding: 0 20rpx;
+    background: #fff;
 
     .header {
       height: 120rpx;
@@ -186,11 +197,13 @@
     .body {
       .content {
         margin-bottom: 10rpx;
+        font-size: 30rpx;
       }
 
       .image {
         height: 350rpx;
         border-radius: 10rpx;
+        background: #CCCCCC;
       }
     }
 

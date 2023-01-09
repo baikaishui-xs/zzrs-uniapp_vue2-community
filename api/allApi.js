@@ -77,3 +77,40 @@ export function getFollowOpenArticleList(page) {
     url: `/v1/followpost/${page}`,
   })
 }
+// 发布文章
+export function releaseArticle({
+  imglist,
+  text,
+  isopen,
+  topic_id,
+  post_class_id
+}) {
+  return request.post({
+    url: '/v1/post/create',
+    data: {
+      imglist,
+      text,
+      isopen,
+      topic_id,
+      post_class_id
+    }
+  })
+}
+// 获取指定话题分类下的话题列表
+export function getTopicOptionsList() {
+  return request.get({
+    url: '/v1/topicclass/1/topic/1',
+  })
+}
+// 获取热门话题
+export function getHotTopic() {
+  return request.get({
+    url: '/v1/hottopic',
+  })
+}
+// 获取指定话题下的文章列表
+export function getTopicList(id, page) {
+  return request.get({
+    url: `/v1/topic/${id}/post/${page}`,
+  })
+}
